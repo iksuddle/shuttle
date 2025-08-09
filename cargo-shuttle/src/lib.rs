@@ -1897,7 +1897,7 @@ impl Shuttle {
         Ok(())
     }
 
-    async fn project_delete(&self, no_confirm: bool) -> Result<()> {
+    async fn project_delete(&mut self, no_confirm: bool) -> Result<()> {
         let client = self.client.as_ref().unwrap();
         let pid = self.ctx.project_id();
 
@@ -1932,6 +1932,9 @@ impl Shuttle {
         }
 
         let res = client.delete_project(pid).await?.into_inner();
+
+        self.ctx.remove_project_id();
+        self.ctx.save_local_internal()?;
 
         println!("{res}");
 
